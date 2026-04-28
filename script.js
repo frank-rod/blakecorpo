@@ -45,30 +45,66 @@
     revealEls.forEach((el) => el.classList.add('is-visible'));
   }
 
+  function showNote(note, msg, type) {
+    if (!note) return;
+    note.hidden = false;
+    note.textContent = msg;
+    if (type === 'error') {
+      note.style.background = 'rgba(220, 80, 80, .12)';
+      note.style.color = '#a83232';
+    } else {
+      note.style.background = '';
+      note.style.color = '';
+    }
+  }
+
   window.Blake = {
-    handleForm(event) {
+    async handleForm(event) {
       event.preventDefault();
       const form = event.target;
       const note = document.getElementById('form-note');
+      const submitBtn = form.querySelector('button[type="submit"]');
       const data = Object.fromEntries(new FormData(form).entries());
 
       if (!data.nombre || !data.telefono) {
-        if (note) {
-          note.hidden = false;
-          note.textContent = 'Por favor completa los campos requeridos.';
-          note.style.background = 'rgba(220, 80, 80, .12)';
-          note.style.color = '#a83232';
-        }
+        showNote(note, 'Por favor completa los campos requeridos.', 'error');
         return false;
       }
 
-      if (note) {
-        note.hidden = false;
-        note.style.background = '';
-        note.style.color = '';
-        note.textContent = `Gracias, ${data.nombre.split(' ')[0]}. Recibimos tu mensaje y te contactaremos a la brevedad.`;
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        if (response.ok && (result.success === 'true' || result.success === true)) {
+          showNote(
+            note,
+            `Gracias, ${data.nombre.split(' ')[0]}. Recibimos tu mensaje y te contactaremos a la brevedad.`,
+            'success'
+          );
+          form.reset();
+        } else {
+          throw new Error('Submit failed');
+        }
+      } catch (err) {
+        showNote(
+          note,
+          'Ocurrió un error al enviar. Intenta de nuevo o escríbenos por WhatsApp.',
+          'error'
+        );
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
       }
-      form.reset();
       return false;
     },
   };
