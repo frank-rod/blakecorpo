@@ -148,7 +148,7 @@ p { margin: 0 0 1em; color: var(--c-gray); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 .header__logo img {
   height: 60px;
@@ -157,6 +157,49 @@ p { margin: 0 0 1em; color: var(--c-gray); }
   filter: brightness(0) invert(1);
 }
 .header.is-scrolled .header__logo img { filter: none; }
+
+/* Partner co-branding (header) */
+.header__partner {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  margin-left: 1rem;
+  margin-right: auto;
+}
+.header__partner-divider {
+  width: 1px;
+  height: 44px;
+  background: rgba(255,255,255,.35);
+  display: block;
+  transition: background .35s var(--ease);
+}
+.header__partner-label {
+  font-family: var(--font-title);
+  font-weight: 600;
+  font-size: .62rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.78);
+  line-height: 1.25;
+  white-space: nowrap;
+  transition: color .35s var(--ease);
+}
+.header__partner-link {
+  display: block;
+  opacity: .92;
+  transition: opacity .25s var(--ease), transform .25s var(--ease);
+}
+.header__partner-link:hover { opacity: 1; transform: scale(1.05); }
+.header__partner-link img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.header.is-scrolled .header__partner-divider,
+.page-inner .header__partner-divider { background: rgba(31,63,82,.2); }
+.header.is-scrolled .header__partner-label,
+.page-inner .header__partner-label { color: var(--c-gray); }
 
 .nav__list {
   display: flex;
@@ -1334,6 +1377,10 @@ p { margin: 0 0 1em; color: var(--c-gray); }
 @media (max-width: 1024px) {
   :root { --header-h: 84px; }
   .header__logo img { height: 52px; }
+  .header__partner { gap: .6rem; margin-left: .6rem; }
+  .header__partner-label { display: none; }
+  .header__partner-divider { height: 36px; }
+  .header__partner-link img { height: 32px; }
 
   .hero__content { grid-template-columns: 1fr; gap: 2rem; }
   .hero__floats { height: 380px; max-width: 480px; }
@@ -1365,6 +1412,7 @@ p { margin: 0 0 1em; color: var(--c-gray); }
 }
 
 @media (max-width: 720px) {
+  .header__partner { display: none; }
   .nav { display: none; }
   .nav.is-open {
     display: flex;
