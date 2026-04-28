@@ -84,8 +84,14 @@
           },
           body: JSON.stringify(data),
         });
-        const result = await response.json();
-        if (response.ok && (result.success === 'true' || result.success === true)) {
+
+        let result = null;
+        try { result = await response.json(); } catch (_) {}
+        console.log('FormSubmit response:', response.status, result);
+
+        const success = result && (result.success === 'true' || result.success === true);
+
+        if (response.ok && success) {
           showNote(
             note,
             `Gracias, ${data.nombre.split(' ')[0]}. Recibimos tu mensaje y te contactaremos a la brevedad.`,
@@ -93,9 +99,11 @@
           );
           form.reset();
         } else {
-          throw new Error('Submit failed');
+          const reason = (result && (result.message || result.error)) || `HTTP ${response.status}`;
+          throw new Error(reason);
         }
       } catch (err) {
+        console.error('Form submit error:', err);
         showNote(
           note,
           'Ocurrió un error al enviar. Intenta de nuevo o escríbenos por WhatsApp.',
