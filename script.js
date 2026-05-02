@@ -16,6 +16,8 @@
   toggle.addEventListener('click', () => {
     const open = nav.classList.toggle('is-open');
     toggle.classList.toggle('is-open', open);
+    header.classList.toggle('is-menu-open', open);
+    document.body.classList.toggle('no-scroll', open);
     toggle.setAttribute('aria-expanded', String(open));
   });
 
@@ -23,6 +25,8 @@
     a.addEventListener('click', () => {
       nav.classList.remove('is-open');
       toggle.classList.remove('is-open');
+      header.classList.remove('is-menu-open');
+      document.body.classList.remove('no-scroll');
       toggle.setAttribute('aria-expanded', 'false');
     });
   });

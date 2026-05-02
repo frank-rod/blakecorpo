@@ -1412,34 +1412,73 @@ p { margin: 0 0 1em; color: var(--c-gray); }
 }
 
 @media (max-width: 720px) {
+  :root { --header-h: 72px; }
+  .header__logo img { height: 44px; }
   .header__partner { display: none; }
   .nav { display: none; }
   .nav.is-open {
     display: flex;
     position: fixed;
-    inset: var(--header-h) 0 0 0;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100dvh - var(--header-h));
+    max-height: calc(100dvh - var(--header-h));
     background: rgba(255,255,255,.98);
     backdrop-filter: blur(14px);
-    padding: 2rem;
+    padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
     flex-direction: column;
+    z-index: 99;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
   .nav.is-open .nav__list {
     flex-direction: column;
     gap: .25rem;
     width: 100%;
+    margin: auto 0;
   }
   .nav.is-open .nav__link {
     color: var(--c-blue);
-    font-size: 1.1rem;
-    padding: .9rem 1rem;
+    font-size: 1.05rem;
+    padding: .85rem 1rem;
     text-align: center;
+    border-radius: 12px;
+  }
+  .nav.is-open .nav__link[aria-current="page"] {
+    background: rgba(0,161,154,.08);
+  }
+  .nav.is-open .nav__link--cta {
+    background: var(--c-turquesa);
+    color: #fff !important;
+    margin-top: .75rem;
   }
   .nav-toggle { display: flex; }
 
-  .hero { min-height: auto; padding-top: calc(var(--header-h) + 2rem); padding-bottom: 3rem; }
-  .hero__floats { height: 320px; margin: 0 auto; }
-  .hero__float--front { width: 75%; right: 0; }
-  .hero__float--back { width: 60%; left: 5%; }
+  /* When menu is open, force header to light theme for readability */
+  .header.is-menu-open {
+    background: rgba(255,255,255,.98);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 rgba(31,63,82,.06);
+  }
+  .header.is-menu-open .header__logo img { filter: none; }
+  .header.is-menu-open .nav-toggle span { background: var(--c-blue); }
+
+  body.no-scroll { overflow: hidden; }
+
+  /* Hero compacto en mobile */
+  .hero { min-height: auto; padding-top: calc(var(--header-h) + 1.2rem); padding-bottom: 2.5rem; }
+  .hero__content { gap: 1.5rem; padding-block: 1.5rem; }
+  .hero__title { font-size: clamp(1.9rem, 7vw, 2.4rem); }
+  .hero__sub { font-size: .98rem; margin-bottom: 1.4rem; }
+  .hero__cta .btn { padding: .8rem 1.3rem; font-size: .9rem; }
+  .hero__floats { height: 260px; max-width: 360px; margin: .5rem auto 0; }
+  .hero__float { border-width: 4px; border-radius: var(--radius-md); }
+  .hero__float--front { width: 70%; right: 0; top: 0; }
+  .hero__float--back { width: 56%; left: 0; bottom: 0; }
+  .hero__scroll { display: none; }
 
   .case__num, .product__num { font-size: 3rem; }
 
@@ -1480,21 +1519,37 @@ p { margin: 0 0 1em; color: var(--c-gray); }
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: .5rem;
-    margin-top: 1rem;
+    gap: .7rem;
+    margin-top: 1.2rem;
     font-family: var(--font-title);
-    font-size: .8rem;
-    font-weight: 600;
-    letter-spacing: .12em;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .14em;
     text-transform: uppercase;
     color: var(--c-turquesa);
   }
-  .cases__hint::before, .cases__hint::after {
-    content: "";
-    width: 24px;
-    height: 1px;
-    background: var(--c-turquesa);
-    opacity: .5;
+  .cases__hint::before,
+  .cases__hint::after {
+    display: inline-block;
+    font-size: 1.15rem;
+    line-height: 1;
+    will-change: transform;
+  }
+  .cases__hint::before {
+    content: "‹";
+    animation: hint-swipe-left 1.6s ease-in-out infinite;
+  }
+  .cases__hint::after {
+    content: "›";
+    animation: hint-swipe-right 1.6s ease-in-out infinite;
+  }
+  @keyframes hint-swipe-right {
+    0%, 100% { transform: translateX(0); opacity: .55; }
+    50%      { transform: translateX(7px); opacity: 1; }
+  }
+  @keyframes hint-swipe-left {
+    0%, 100% { transform: translateX(0); opacity: .55; }
+    50%      { transform: translateX(-7px); opacity: 1; }
   }
 
   .clients__grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
